@@ -162,17 +162,23 @@ const ScrollAnimation = () => {
      */
     const clock = new THREE.Clock()
 
+    // Three js clock
+    let previousTime = 0
+
     const tick = () => {
       const elapsedTime = clock.getElapsedTime()
-      // Animate camera
+      const deltaTime = elapsedTime - previousTime
+      previousTime = elapsedTime
       camera.position.y = (-scrollY / sizes.height) * objectsDistance
 
       //@ts-ignore
-      const parallaxX = cursor.x
+      const parallaxX = cursor.x * 0.5
       //@ts-ignore
-      const parallaxY = -cursor.y
-      cameraGroup.position.x = parallaxX
-      cameraGroup.position.y = parallaxY
+      const parallaxY = -cursor.y * 0.5
+      cameraGroup.position.x +=
+        (parallaxX - cameraGroup.position.x) * 5 * deltaTime // or divided /10
+      cameraGroup.position.y +=
+        (parallaxY - cameraGroup.position.y) * 5 * deltaTime // or divided /10
 
       // Animate meshes
       for (const mesh of sectionMeshes) {
