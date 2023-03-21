@@ -108,6 +108,11 @@ const ScrollAnimation = () => {
     /**
      * Camera
      */
+
+    // Group
+    const cameraGroup = new THREE.Group()
+    scene.add(cameraGroup)
+
     // Base camera
     const camera = new THREE.PerspectiveCamera(
       35,
@@ -116,7 +121,7 @@ const ScrollAnimation = () => {
       100
     )
     camera.position.z = 6
-    scene.add(camera)
+    cameraGroup.add(camera)
 
     /**
      * Renderer
@@ -137,6 +142,22 @@ const ScrollAnimation = () => {
     })
 
     /**
+     * Cursor
+     */
+    const cursor = {}
+    //@ts-ignore
+    cursor.x = 0
+    //@ts-ignore
+    cursor.y = 0
+
+    window.addEventListener('mousemove', (event) => {
+      //@ts-ignore
+      cursor.x = event.clientX / sizes.width - 0.5
+      //@ts-ignore
+      cursor.y = event.clientY / sizes.width - 0.5
+    })
+
+    /**
      * Animate
      */
     const clock = new THREE.Clock()
@@ -145,6 +166,13 @@ const ScrollAnimation = () => {
       const elapsedTime = clock.getElapsedTime()
       // Animate camera
       camera.position.y = (-scrollY / sizes.height) * objectsDistance
+
+      //@ts-ignore
+      const parallaxX = cursor.x
+      //@ts-ignore
+      const parallaxY = -cursor.y
+      cameraGroup.position.x = parallaxX
+      cameraGroup.position.y = parallaxY
 
       // Animate meshes
       for (const mesh of sectionMeshes) {
